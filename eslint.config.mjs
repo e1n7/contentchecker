@@ -6,5 +6,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const compat = new FlatCompat({ baseDirectory: __dirname });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals")];
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals"),
+  {
+    ignores: [
+      ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
+      "cloudflare-env.d.ts",
+      "worker-configuration.d.ts",
+    ],
+  },
+];
 export default eslintConfig;
