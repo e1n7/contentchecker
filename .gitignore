@@ -1,8 +1,9 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build output
+.open-next/
+.wrangler/
 dist/
 build/
 .next/
@@ -17,6 +18,12 @@ build/
 .env
 .env.local
 .env.*.local
+.dev.vars
+.dev.vars.*
+
+# Generated Cloudflare types
+cloudflare-env.d.ts
+worker-configuration.d.ts
 
 # OS
 .DS_Store

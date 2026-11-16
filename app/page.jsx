@@ -5,7 +5,6 @@ import { Search, RotateCcw, HelpCircle, FileText, Shield, Info, CheckCircle2, Ch
 import { motion, AnimatePresence } from "framer-motion";
 import { GooeyToaster, gooeyToast } from "goey-toast";
 import { parseBrainlyAnswer, isHTML } from "@/lib/brainlyParser";
-import { ANALYZE_CONTENT_URL, SUPABASE_PUBLISHABLE_KEY } from "@/lib/supabasePublic";
 import Header from "@/components/ban-checker/Header";
 import CountrySelector from "@/components/ban-checker/CountrySelector";
 import ResultsDisplay from "@/components/ban-checker/ResultsDisplay";
@@ -109,9 +108,9 @@ export default function BanChecker() {
         if (parsed.isValid) contentToAnalyze = parsed.text;
         else console.warn("HTML detected but parsing failed:", parsed.error);
       }
-      const response = await fetch(ANALYZE_CONTENT_URL, {
+      const response = await fetch("/api/analyze-content", {
         method: "POST",
-        headers: { "Content-Type": "application/json", apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`, ...(clientId ? { "x-client-id": clientId } : {}) },
+        headers: { "Content-Type": "application/json", ...(clientId ? { "x-client-id": clientId } : {}) },
         body: JSON.stringify({ text: contentToAnalyze, countryCode: selectedCountry }),
       });
       const res = await response.json();
