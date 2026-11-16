@@ -26,13 +26,13 @@ Open <http://localhost:3000>. D1 uses Wrangler's local simulation by default; lo
 
 ## Cloudflare configuration
 
-This clone uses `@opennextjs/cloudflare`, Wrangler, and the new Worker name `contentchecker-d1-migrated`. The Wrangler D1 binding is `DB` and points to the new D1 database `contentchecker-d1-migrated` (`743f8aab-6802-4a4c-bf29-fcb29f2d8dd0`). Do not substitute the existing `banchecker` database or the existing `contentchecker` Worker.
+This clone uses `@opennextjs/cloudflare` and Wrangler to deploy the app as the `contentchecker` Worker at `https://contentchecker.seft.workers.dev`. The Wrangler D1 binding is `DB` and points to the separate D1 database `contentchecker-d1-migrated` (`743f8aab-6802-4a4c-bf29-fcb29f2d8dd0`). The previous `contentchecker-d1-migrated` Worker deployment remains available as a fallback.
 
 The D1 schema is in `migrations/0001_init.sql`. The repository contains no exported banned-word data. Keep any data-import SQL outside the repository and do not place the private word list under `public/`, in a client component, or in a `NEXT_PUBLIC_` variable.
 
-The schema is in `migrations/0001_init.sql`; the owner-approved SQL data import is handled separately and remains outside Git. Remote database changes and deployments require explicit owner approval. The Cloudflare Worker build is isolated to the `cloudflare-migration` branch; do not deploy this project from `main`.
+The schema is in `migrations/0001_init.sql`; the owner-approved SQL data import is handled separately and remains outside Git. Remote database changes and deployments require explicit owner approval. The `contentchecker` Worker is configured to build and deploy only from the `cloudflare-migration` branch; do not deploy this project from `main`.
 
-Configure Workers Builds only for this new Worker and the `e1n7/contentchecker` repository, watching `cloudflare-migration`. The existing Worker remains on its current `main` trigger, and the Supabase project is not part of this migration.
+Workers Builds for the `contentchecker` Worker use the `e1n7/contentchecker` repository and watch `cloudflare-migration` only. The Supabase project is not part of this migration.
 
 ## Checks
 
