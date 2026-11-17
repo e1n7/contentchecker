@@ -1,11 +1,13 @@
 import React from "react";
 import { ShieldCheck, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { groupFoundMatches } from "@/lib/groupFoundMatches.js";
 
 export default function ResultsDisplay({ result }) {
   if (!result) return null;
 
   const found = Array.isArray(result.found) ? result.found : [];
+  const groupedFound = groupFoundMatches(found);
   const isClean = found.length === 0;
   const matchCount = result.matchCount ?? found.length;
   const occurrenceCount = found.reduce((total, item) => total + (item.count || 0), 0);
@@ -28,7 +30,25 @@ export default function ResultsDisplay({ result }) {
             <p className={`text-xs sm:text-sm mt-1 sm:mt-0.5 ${isClean ? "text-emerald-700/80 dark:text-emerald-400/80" : "text-red-700/80 dark:text-red-400/80"}`}>
               {isClean ? "Your content doesn't contain any known banned words." : "The following words were found in your content:"}
             </p>
-            {!isClean && <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">{found.map((word, i) => <span key={`${word.word}-${i}`} className="inline-flex break-all rounded-lg border border-red-200 bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:border-red-800/60 dark:bg-red-900/50 dark:text-red-300 sm:px-3 sm:py-1 sm:text-sm">{word.word} ×{word.count}</span>)}</div>}
+            {!isClean && (
+              <>
+                <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
+                  {groupedFound.map((group) => (
+                    <span
+                      key={group.key}
+                      title={`${group.patternCount} matching pattern${group.patternCount === 1 ? "" : "s"}; patterns may overlap on the same text.`}
+                      className="inline-flex break-all rounded-lg border border-red-200 bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:border-red-800/60 dark:bg-red-900/50 dark:text-red-300 sm:px-3 sm:py-1 sm:text-sm"
+                    >
+                      {group.word}
+                      <span className="ml-1 opacity-75">· {group.patternCount} pattern{group.patternCount === 1 ? "" : "s"}</span>
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Repeated labels are grouped; pattern counts can overlap and are not unique text occurrences.
+                </p>
+              </>
+            )}
           </div>
         </div>
 
